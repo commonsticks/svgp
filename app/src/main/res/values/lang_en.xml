@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ROUTE_BUILD_SNACKBAR_1">Choose start point</string>
+    <string name="ROUTE_BUILD_SNACKBAR_2">Choose end point</string>
+</resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.widget.RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UI.RouteCreateActivity">
+
+    <EditText
+        android:id="@+id/route_create_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Route name"
+        android:inputType="text"
+        tools:ignore="LabelFor" />
+
+    <EditText
+        android:id="@+id/route_create_fps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/route_create_name"
+        android:hint="FPS"
+        android:inputType="numberDecimal"
+        tools:ignore="LabelFor"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/route_create_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="bottom"
+        android:text="Create"
+        android:layout_alignParentLeft="true" />
+
+</android.widget.RelativeLayout>

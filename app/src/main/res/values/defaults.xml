@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="DEFAULT_STORAGE">@string/STORAGE_EXTERNAL</string>
+
+    <string name="DEFAULT_GOOGLE_SV_PITCH">0</string>
+    <string name="DEFAULT_GOOGLE_SV_HEADING"></string>
+    <string name="DEFAULT_GOOGLE_SV_SIZE">600x300</string>
+
+    <integer name="DEFAULT_VIDEO_FPS">5</integer>
+</resources>
