@@ -10,14 +10,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -48,6 +44,9 @@ public class RouteListActivity extends AppCompatActivity {
     private Intent routeCreateIntent;
     Intent routePlayIntent;
 
+    private final int CHOOSE_EDIT = 1;
+    private int chooseState;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.route_list_menu, menu);
@@ -57,8 +56,10 @@ public class RouteListActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.route_list_menu_create_route:
-                Log.d(LOG, "Create new route option selected");
+            case R.id.route_list_menu_edit:
+                Log.d(LOG, "Edit route option selected");
+                Toast.makeText(this, "Choose route to edit", Toast.LENGTH_LONG).show();
+                chooseState = CHOOSE_EDIT;
                 break;
             case R.id.route_list_menu_about:
                 Log.d(LOG, "About page option selected");
@@ -71,7 +72,6 @@ public class RouteListActivity extends AppCompatActivity {
 
     @Override
     protected void onPostResume() {
-//        Log.d(LOG, "onPostResume");
         super.onPostResume();
         if (adapter != null) {
             init();
@@ -102,6 +102,11 @@ public class RouteListActivity extends AppCompatActivity {
         app = (App) getApplication();
         LOG = getResources().getString(R.string.DEBUG_LOG_NAME);
         routeHolder = app.getRouteHolder();
+        if (!routeHolder.isEverythingAlright()) {
+            finish();
+            return;
+        }
+        chooseState = 0;
         imageLoader = app.getImageLoader();
         routeBuildIntent = new Intent(this, RouteBuildActivity.class);
         routeCreateIntent = new Intent(this, RouteCreateActivity.class);
@@ -128,14 +133,22 @@ public class RouteListActivity extends AppCompatActivity {
                 RouteListItem clickedItem = (RouteListItem) adapterView.getItemAtPosition(i);
                 clickedRouteName = clickedItem.getRouteName();
                 Log.d(LOG, "clicked route name:" + clickedRouteName);
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
+                switch (chooseState) {
+                    case CHOOSE_EDIT:
+                        routeCreateIntent.putExtra("routeExists", true);
+                        routeCreateIntent.putExtra("routeName", clickedRouteName);
+                        startActivity(routeCreateIntent);
+                        break;
+                    default:
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
 //                        routeBuildIntent.putExtra("routeName", clickedRouteName);
-                        routeBuildIntent.putExtra("routeSettings", new RouteSettings(clickedRouteName));
-                        startActivity(routeBuildIntent);
-                    }
-                });
+                                routeBuildIntent.putExtra("routeSettings", new RouteSettings(clickedRouteName));
+                                startActivity(routeBuildIntent);
+                            }
+                        });
+                }
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

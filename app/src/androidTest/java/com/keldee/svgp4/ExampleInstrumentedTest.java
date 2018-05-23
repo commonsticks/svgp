@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.chaldee.svgp4", appContext.getPackageName());
+        assertEquals("com.keldee.svgp4", appContext.getPackageName());
     }
 }

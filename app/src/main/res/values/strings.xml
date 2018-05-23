@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">svgp4</string>
+    <string name="app_name">Street View Go</string>
 
     <string name="GOOGLE_IMAGEAPI_URL">https://maps.googleapis.com/maps/api/streetview</string>
     <string name="GOOGLE_DIRECTIONAPI_URL">https://maps.googleapis.com/maps/api/directions/json</string>
@@ -11,7 +11,7 @@
 
     <string name="STORAGE_INTERNAL">internal</string>
     <string name="STORAGE_EXTERNAL">external</string>
-    <string name="title_activity_route_list">RouteListActivity</string>
+
+    <string name="title_activity_route_list">@string/app_name</string>
     <string name="title_activity_route_build">Map</string>
-    <string name="title_activity_route_list2">RouteListActivity2</string>
 </resources>

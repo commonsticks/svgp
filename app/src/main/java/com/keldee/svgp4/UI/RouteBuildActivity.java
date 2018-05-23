@@ -1,5 +1,6 @@
 package com.keldee.svgp4.UI;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -46,6 +47,8 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
 
     private Polyline polyline;
 
+    private Intent routePlayIntent;
+
     //building states
     private final int BUILD_SCRATCH = 0;
     private final int BUILD_EDIT = 1;
@@ -68,6 +71,7 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        routePlayIntent = new Intent(this, PlayerActivity.class);
         directionLoader = new DirectionLoader(this);
         map = googleMap;
         LOG = getResources().getString(R.string.DEBUG_LOG_NAME);
@@ -147,7 +151,7 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
                 //i don't really like Mexican views
                 /*new LatLng(26.3744254,-103.9903647)*/ };
         Random r = new Random();
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(rLocations[r.nextInt(3)], 15));
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(rLocations[r.nextInt(rLocations.length)], 15));
         Snackbar.make(findViewById(R.id.route_build_activity_map), R.string.ROUTE_BUILD_SNACKBAR_1, Snackbar.LENGTH_LONG).show();
     }
 
@@ -218,11 +222,14 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     private void setCallbacks () {
-        Button reloadRouteButton = findViewById(R.id.reloadRouteButton);
-        Button saveRouteButton = findViewById(R.id.saveRouteButton);
+        Button reloadRouteButton = findViewById(R.id.reload_route_button);
+        Button saveRouteButton = findViewById(R.id.save_route_button);
+        Button playRouteButton = findViewById(R.id.play_route_button);
 
         reloadRouteButton.setOnClickListener(new OnReloadRouteButtonClickCallback());
         saveRouteButton.setOnClickListener(new OnSaveRouteButtonClickCallback());
+        playRouteButton.setOnClickListener(new OnPlayRouteButtonClickCallback());
+
         map.setOnMapClickListener(new OnMapClickCallback());
         map.setOnMarkerDragListener(new OnMarkerDragCallback());
     }
@@ -347,6 +354,14 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         public void onClick(View v) {
             finishBuild();
+        }
+    }
+
+    private class OnPlayRouteButtonClickCallback implements View.OnClickListener {
+        @Override
+        public void onClick(View v) {
+            routePlayIntent.putExtra("routeSettings", new RouteSettings(routeName));
+            startActivity(routePlayIntent);
         }
     }
 

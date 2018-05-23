@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.keldee.svgp4.App;
@@ -33,6 +35,10 @@ public class PlayerActivity extends AppCompatActivity {
     private int spf;
     private final int maxBufferSize = 10;
     private int task = 0;
+    private boolean complete = false;
+
+    private Button restartButton;
+    private Button backButton;
 
     @Override
     protected void onStop() {
@@ -117,9 +123,37 @@ public class PlayerActivity extends AppCompatActivity {
                 }
                 if (size > 0)
                     show(buffer.get(0));
+                if (complete) {
+                    initAfterButtons();
+                    return;
+                }
                 play();
             }
         }, spf);
+    }
+
+    private void initAfterButtons () {
+        restartButton = findViewById(R.id.player_restart);
+        backButton = findViewById(R.id.player_back);
+
+        restartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recreate();
+            }
+        });
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        showAfterButtons();
+    }
+
+    private void showAfterButtons () {
+        restartButton.setVisibility(View.VISIBLE);
     }
 
     private void sleep (int millis) {
@@ -139,6 +173,7 @@ public class PlayerActivity extends AppCompatActivity {
         @Override
         public void onLoadComplete() {
             Log.d(LOG, "complete");
+            complete = true;
         }
 
         @Override

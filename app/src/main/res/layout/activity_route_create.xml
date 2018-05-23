@@ -10,7 +10,7 @@
         android:id="@+id/route_create_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Route name"
+        android:hint="@string/ROUTE_CREATE_HINT_NAME"
         android:inputType="text"
         tools:ignore="LabelFor" />
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/route_create_name"
-        android:hint="FPS"
+        android:hint="@string/ROUTE_CREATE_HINT_FPS"
         android:inputType="numberDecimal"
         tools:ignore="LabelFor"
         android:layout_alignParentLeft="true" />
@@ -32,7 +32,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:layout_gravity="bottom"
-        android:text="Create"
+        android:text="@string/ROUTE_CREATE_BUTTON"
         android:layout_alignParentLeft="true" />
 
 </android.widget.RelativeLayout>

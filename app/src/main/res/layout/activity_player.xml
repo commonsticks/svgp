@@ -11,4 +11,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="116dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints">
+
+        <Button
+            android:text="@string/PLAYER_BUTTON_RESTART"
+            android:visibility="invisible"
+            android:id="@+id/player_restart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="@string/PLAYER_BUTTON_BACK" />
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/player_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="11dp"
+            tools:text="@string/PLAYER_BUTTON_RESTART" />
+    </RelativeLayout>
+
+
+
 </android.support.constraint.ConstraintLayout>

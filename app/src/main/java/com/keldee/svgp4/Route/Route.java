@@ -46,7 +46,7 @@ public class Route extends RouteSettings {
             f = (GCoordinate) image.getCoordinate();
             t = (GCoordinate) images.get(i + 1).getCoordinate();
             heading = (int) bearTowardPoint(f, t);
-            Log.d(LOG, "heading image:" + i + " to heading:" + heading);
+//            Log.d(LOG, "heading image:" + i + " to heading:" + heading);
             if (heading < 0)
                 heading = 360 + heading;
             image.setHeading(Integer.toString(heading));
@@ -54,10 +54,7 @@ public class Route extends RouteSettings {
 //        images.get(images.size() - 1).setHeading(Integer.toString(heading));
     }
 
-//    private double bearTowardPoint (SVImage from, SVImage to) {
     private double bearTowardPoint (GCoordinate f, GCoordinate t) {
-//        GCoordinate f = (GCoordinate) from.getCoordinate();
-//        GCoordinate t = (GCoordinate) to.getCoordinate();
         double fLat = Math.toRadians(f.latitude);
         double tLat = Math.toRadians(t.latitude);
         double dy = Math.toRadians(t.longitude - f.longitude);

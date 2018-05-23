@@ -46,9 +46,13 @@ public class RouteHolder {
         init();
     }
 
+    public boolean isEverythingAlright () {
+        return homeDirChecked;
+    }
+
     private void init () {
         Log.d(LOG, "initializing RouteHolder...");
-        homeDirName = resources.getString(R.string.FILE_HOMEDIR_NAME);
+        homeDirName = resources.getString(R.string.FILE_HOMEDIR_NAME).replaceAll("\\s", "");
         routeDirName = resources.getString(R.string.FILE_ROUTEDIR_NAME);
         STORAGE_INTERNAL = resources.getString(R.string.STORAGE_INTERNAL);
         STORAGE_EXTERNAL = resources.getString(R.string.STORAGE_EXTERNAL);
@@ -64,6 +68,13 @@ public class RouteHolder {
             switchStorage();
             checkHomeDir();
             if (!homeDirChecked) {
+                //epic
+                /*checkHomeDir();
+                if (!homeDirChecked) {
+                    checkHomeDir();
+                    if (!homeDirChecked)
+                        checkHomeDir();
+                }*/
                 Log.e(LOG, "after 2 tries home directory still not accessible");
                 //TODO Make detailed check, if didn't work, tell user that there's something  with filesystem
                 return;
@@ -82,7 +93,6 @@ public class RouteHolder {
     }
 
     public String print () {
-//        return Arrays.toString(getRouteNames());
         return getRouteNames().toString();
     }
     public String printEdited () {
@@ -128,7 +138,7 @@ public class RouteHolder {
 
             Log.d(LOG, "route:" + name + " is being edited now, so I'm going to break your program with yet another NullPointerException, my excuses");
             Log.d(LOG, "previous message is a joke");
-            //commenting this line makes everything work almost perfectly
+            //commenting this line makes the app work sometimes
 //            return null;
         }
 
@@ -144,7 +154,6 @@ public class RouteHolder {
     }
 
     public boolean saveRoute (String name) {
-//        Log.d(LOG, "B" + printEdited());
         Route r = getRoute(name);
         if (r != null) {
             boolean res = saveRoute(routes.indexOf(r));
@@ -185,18 +194,11 @@ public class RouteHolder {
         Iterator i = editedRoutes.iterator();
 
         while (i.hasNext()) {
-            /*r = getRouteIndex((String)i.next());
-            if (r >= 0)
-                saveRoute(r);*/
             saveRoute((String) i.next());
         }
     }
 
     private int getRouteIndex (String name) {
-        /*for (int i = 0; i < routes.size(); i++) {
-            if (routes.get(i).name.equals(name))
-                return i;
-        }*/
         for (Route r : routes) {
             if (r.name.equals(name))
                 return routes.indexOf(r);
@@ -218,9 +220,7 @@ public class RouteHolder {
         File[] routeFiles = routeDirectory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
-                if (fileExtension(file).equals(routeExtensionName))
-                    return true;
-                return false;
+                return fileExtension(file).equals(routeExtensionName);
             }
         });
         if (routeFiles == null)
@@ -241,7 +241,7 @@ public class RouteHolder {
 
 
 
-    public boolean switchStorage (String newStorage) {
+    private boolean switchStorage (String newStorage) {
         if (newStorage.equals(STORAGE_INTERNAL)) {
             if (internalStorageAvailable) {
                 storage = internalStorage;
@@ -264,7 +264,7 @@ public class RouteHolder {
         return true;
     }
 
-    private boolean switchStorage () {
+    public boolean switchStorage () {
         if (storage.equals(internalStorage))
             return switchStorage(STORAGE_EXTERNAL);
         else
@@ -310,6 +310,7 @@ public class RouteHolder {
                     //TODO try to re-create
                     //TODO if not succeed throw critical exception application cant work with device storage work wont be saved
                 }
+                checkHomeDir();
             }
         }
         else {
@@ -318,6 +319,7 @@ public class RouteHolder {
                 //TODO try to re-create
                 //TODO if not succeed throw critical exception application cant work with device storage work wont be saved
             }
+            checkHomeDir();
         }
     }
 
