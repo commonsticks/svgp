@@ -1,6 +1,10 @@
 package com.keldee.svgp4;
 
 import android.app.Application;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
+import android.content.Loader;
+import android.graphics.Bitmap;
 
 import com.keldee.svgp4.FileSystem.RouteHolder;
 import com.keldee.svgp4.GoogleAPI.SVPoint.GCoordinate;
@@ -18,10 +22,19 @@ public class App extends Application {
     private ImageLoader imageLoader;
     private RouteHolder routeHolder;
 
+    private String defaultPitch;
+    private String defaultHeading;
+    private String defaultSize;
+
     @Override
     public void onCreate() {
         imageLoader = new ImageLoader(this);
         routeHolder = new RouteHolder(this);
+
+        defaultPitch = getResources().getString(R.string.DEFAULT_GOOGLE_SV_PITCH);
+        defaultHeading = getResources().getString(R.string.DEFAULT_GOOGLE_SV_HEADING);
+        defaultSize = getResources().getString(R.string.DEFAULT_GOOGLE_SV_SIZE);
+
         super.onCreate();
     }
 
@@ -34,17 +47,6 @@ public class App extends Application {
     }
 
     public Route generateSampleRoute () {
-        String defaultPitch = getResources().getString(R.string.DEFAULT_GOOGLE_SV_PITCH);
-        String defaultHeading = getResources().getString(R.string.DEFAULT_GOOGLE_SV_HEADING);
-        String defaultSize = getResources().getString(R.string.DEFAULT_GOOGLE_SV_SIZE);
-
-        /*SVSettings<GPanoId, GCoordinate> gs1 = new SVSettings<>
-                (defaultPitch, defaultHeading, defaultSize, new GPanoId("CAoSLEFGMVFpcE1EaGZpMWo4Wk1ib2hiYW9pOXVTZDdFeFEySVpyMTBjdE8taGdr"));
-        SVSettings<GPanoId, GCoordinate> gs2 = new SVSettings<>
-                (defaultPitch, defaultHeading, defaultSize, new GPanoId("Wp6xuAo2wBhZs40nzSzWhw"));
-        SVSettings<GPanoId, GCoordinate> gs3 = new SVSettings<>
-                (defaultPitch, defaultHeading, defaultSize, new GPanoId("D5Tylwxk5kS1Y1hdTDe3Bw"));*/
-
         SVSettings<GCoordinate, GPanoId> gs1 = new SVSettings<>
                 (defaultPitch, defaultHeading, defaultSize, new GCoordinate(55.5655013,12.8917999));
         SVSettings<GCoordinate, GPanoId> gs2 = new SVSettings<>
@@ -60,10 +62,10 @@ public class App extends Application {
         images.add(svi1);
         images.add(svi2);
         images.add(svi3);
-        RouteSettings rs = new RouteSettings("test_route");
+        RouteSettings rs = new RouteSettings("__test_route");
         Route route = new Route(rs);
         route.setImages(images);
-        route.importSettings(rs);
+//        route.importSettings(rs);
         route.setImages(images);
 
         return route;
@@ -74,10 +76,6 @@ public class App extends Application {
     }
 
     public SVSettings<GCoordinate, GPanoId> generateDefaultSVSettings () {
-        String defaultPitch = getResources().getString(R.string.DEFAULT_GOOGLE_SV_PITCH);
-        String defaultHeading = getResources().getString(R.string.DEFAULT_GOOGLE_SV_HEADING);
-        String defaultSize = getResources().getString(R.string.DEFAULT_GOOGLE_SV_SIZE);
-
         SVSettings<GCoordinate, GPanoId> svSettings = new SVSettings<>();
         svSettings.setPitch(defaultPitch);
         svSettings.setHeading(defaultHeading);

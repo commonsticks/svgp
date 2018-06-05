@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 
 import static com.keldee.svgp4.FileSystem.RouteHolder.LOG;
@@ -21,13 +23,12 @@ public class SerializeRoute extends AsyncTask<Route, String, boolean[]> {
     @Override
     protected boolean[] doInBackground(Route[] routes) {
         boolean[] result = new boolean[routes.length];
-        if (!inited) {
+        if (inited) {
             for (int i = 0; i < routes.length; i++)
-                result[i] = false;
-            return result;
+                result[i] = serializeRoute(routes[i]);
         }
-        for (int i = 0; i < routes.length; i++)
-            result[i] = serializeRoute(routes[i]);
+        else
+            Arrays.fill(result, false);
         return result;
     }
 
@@ -40,7 +41,6 @@ public class SerializeRoute extends AsyncTask<Route, String, boolean[]> {
     }
 
     private boolean serializeRoute (Route route) {
-//        File dest = new File(destination, route.name + "." + routeExtensionName);
         File dest = new File(destination, route.name.concat(".").concat(routeExtensionName));
         try {
             Log.d(LOG, "serialize route \"" + route.name + "\" to " + dest);

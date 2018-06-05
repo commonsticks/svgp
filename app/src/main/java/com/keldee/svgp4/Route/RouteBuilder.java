@@ -54,22 +54,20 @@ public class RouteBuilder {
                 overview = new ArrayList<>();
 
             points = getRouteLatLng();
-            uselessVariable = (points.size() == 0) ? 0 : points.size() - 1;
+
+            //this is a line that were breaking the app for weeks
+            //I'll just leave it here
+            //uselessVariable = (points.size() == 0) ? 0 : points.size() - 1;
         }
     }
 
     public void finish () {
-//        Log.d(LOG, "RouteBuilder: finish building route:" + routeName);
-//        Log.d(LOG, "BEFORE " + images.toString());
-//        Log.d(LOG, "UV: " + uselessVariable);
-//        Log.d(LOG, "points.size: " + points.size());
+        Log.d(LOG, "RouteBuilder: finish building route:" + routeName);
         for (int i = uselessVariable; i < points.size(); i++) {
             SVSettings<GCoordinate, GPanoId> svSettings = app.generateDefaultSVSettings();
             svSettings.setCoordinate(new GCoordinate(points.get(i).latitude, points.get(i).longitude));
-//            Log.d(LOG, "Adding:" + new GCoordinate(points.get(i).latitude, points.get(i).longitude).toString());
             images.add(new SVImage(svSettings));
         }
-//        Log.d(LOG, "AFTER " + images.toString());
 
         route.setImages(images);
         route.setRouteOverview(overview);

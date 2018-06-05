@@ -34,16 +34,18 @@ public class DeserializeRoute extends AsyncTask<File, String, ArrayList<Route>> 
             ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
             route = (Route) objectInputStream.readObject();
             Log.d(LOG, "deserialized route \"" + route.name + "\" empty:" + route.isEmpty());
+
+            return route;
         } catch (FileNotFoundException e) {
             Log.e(LOG, "FileNotFoundException. couldn't deserialize route", e);
-            return null;
+//            return null;
         } catch (IOException e) {
             Log.e(LOG, "IOException. couldn't deserialize route", e);
-            return null;
+//            return null;
         } catch (ClassNotFoundException e) {
             Log.e(LOG, "ClassNotFoundException. couldn't deserialize route", e);
-            return null;
+//            return null;
         }
-        return route;
+        return null;
     }
 }

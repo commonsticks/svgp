@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/drawer_control_group">
+        <item
+            android:icon="@drawable/baseline_add_black_36dp"
+            android:id="@+id/drawer_create_route"
+            android:title="@string/DRAWER_MENU_CREATE" />
+        <item
+            android:icon="@drawable/baseline_play_arrow_black_36dp"
+            android:id="@+id/drawer_play_route"
+            android:title="@string/DRAWER_MENU_PLAY" />
+        <item
+            android:icon="@drawable/baseline_edit_black_36dp"
+            android:id="@+id/drawer_edit_route"
+            android:title="@string/DRAWER_MENU_EDIT" />
+    </group>
+
+    <group
+        android:id="@+id/drawer_route_list_group">
+        <item
+            android:id="@+id/drawer_route_list"
+            android:title="@string/DRAWER_MENU_ROUTE_LIST_TITLE">
+            <menu android:id="@+id/drawer_route_list_menu" />
+        </item>
+    </group>
+
+</menu>

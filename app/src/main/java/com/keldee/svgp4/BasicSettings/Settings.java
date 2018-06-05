@@ -15,6 +15,7 @@ public abstract class Settings implements SettingsBase {
     }
 
     public boolean isEmpty () {
+        //it's alright, really
         return false;
     }
 

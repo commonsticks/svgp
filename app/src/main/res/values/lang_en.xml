@@ -2,16 +2,30 @@
 <resources>
     <string name="ROUTE_BUILD_SNACKBAR_1">Choose start point</string>
     <string name="ROUTE_BUILD_SNACKBAR_2">Choose end point</string>
-    <string name="ROUTE_BUILD_LOAD_DIRECTIONS_BUTTON">SHOW</string>
-    <string name="ROUTE_BUILD_SAVE_ROUTE_BUTTON">SAVE</string>
-    <string name="ROUTE_BUILD_PLAY_ROUTE_BUTTON">PLAY</string>
+
+    <string name="DRAWER_MENU_CREATE">Create new route</string>
+    <string name="DRAWER_MENU_PLAY">Play this route</string>
+    <string name="DRAWER_MENU_EDIT">Edit this route</string>
+
+    <string name="DRAWER_MENU_ROUTE_LIST_TITLE">My Routes</string>
+
     <string name="ROUTE_LIST_MENU_ABOUT">About</string>
     <string name="ROUTE_LIST_MENU_DELETE_ROUTE">Delete route</string>
     <string name="ROUTE_LIST_MENU_EDIT_ROUTE">Edit route</string>
+
     <string name="PLAYER_BUTTON_RESTART">Restart</string>
     <string name="PLAYER_BUTTON_BACK">Back</string>
-    <string name="ROUTE_CREATE_HINT_NAME">Route name</string>
-    <string name="ROUTE_CREATE_HINT_FPS">FPS</string>
+
+    <string name="ROUTE_CREATE_HINT_NAME">Route name (required)</string>
+    <string name="ROUTE_CREATE_HINT_FPS">Video speed</string>
+
     <string name="ROUTE_CREATE_BUTTON">CREATE</string>
     <string name="ROUTE_CREATE_BUTTON_SAVE">SAVE</string>
+
+    <string name="MAIN_TOAST_START_EMPTY">Create new route to start</string>
+
+    <string name="EDITOR_LIST_DIALOG_ITEM_0">Walk</string>
+    <string name="EDITOR_LIST_DIALOG_ITEM_1">Running</string>
+    <string name="EDITOR_LIST_DIALOG_ITEM_2">Bicycling</string>
+    <string name="EDITOR_LIST_DIALOG_ITEM_3">Driving</string>
 </resources>

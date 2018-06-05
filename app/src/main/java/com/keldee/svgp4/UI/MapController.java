@@ -1,42 +1,47 @@
 package com.keldee.svgp4.UI;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import com.keldee.svgp4.GoogleAPI.LoaderThreadCallback;
-import com.keldee.svgp4.GoogleAPI.Service.DirectionLoader.DirectionLoader;
-import com.keldee.svgp4.R;
-import com.keldee.svgp4.Route.RouteBuilder;
-import com.keldee.svgp4.Route.RouteSettings;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.keldee.svgp4.GoogleAPI.LoaderThreadCallback;
+import com.keldee.svgp4.GoogleAPI.Service.DirectionLoader.DirectionLoader;
+import com.keldee.svgp4.R;
+import com.keldee.svgp4.Route.RouteBuilder;
+import com.keldee.svgp4.Route.RouteSettings;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCallback {
-    private DirectionLoader directionLoader;
+public class MapController {
+    private Context context;
     private String LOG;
-    private String routeName;
-    private RouteSettings startRouteSettings;
+    private DirectionLoader directionLoader;
+    private RouteBuilder routeBuilder;
     private GoogleMap map;
-    RouteBuilder routeBuilder;
 
-    private LatLng[] rLocations;
+    private LatLng[] rLocations = new LatLng[] {
+            new LatLng(48.8687751,2.3109356),
+            new LatLng(38.5509110,-106.2868251),
+            new LatLng(34.0389791,-118.2740209),
+            new LatLng(55.7451833,37.5336330),
+            new LatLng(25.2245205,-80.4308237)
+    };
+
+    public String routeName;
+    private RouteSettings routeSettings;
 
     private LatLng startPoint;
     private LatLng endPoint;
@@ -47,71 +52,63 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
 
     private Polyline polyline;
 
-    private Intent routePlayIntent;
-
     //building states
     private final int BUILD_SCRATCH = 0;
     private final int BUILD_EDIT = 1;
     private int state;
 
-    //useless shit
+    //editor state will be used later, maybe
     private final int OVERVIEW = 0;
     private final int ADD = 1;
     private final int EDIT = 2;
     private int editorState;
-    private boolean reloaded = false;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_route_build);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.route_build_activity_map);
-        mapFragment.getMapAsync(this);
+    private boolean reloaded = false;
+    public boolean mapEmpty = true;
+
+
+
+    public MapController(Context context, GoogleMap map) {
+        this.context = context;
+        this.map = map;
+        init();
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        routePlayIntent = new Intent(this, PlayerActivity.class);
-        directionLoader = new DirectionLoader(this);
-        map = googleMap;
-        LOG = getResources().getString(R.string.DEBUG_LOG_NAME);
-        markers = new ArrayList<>();
-        try {
-            startRouteSettings = (RouteSettings) getIntent().getSerializableExtra("routeSettings");
-        } catch (ClassCastException e) {
-            Log.e(LOG, "cannot cast given serializable to RouteSettings");
-            startRouteSettings = null;
-        }
-
-        if (startRouteSettings == null) {
-            Log.e(LOG, "cannot start RouteBuildActivity without RouteSettings");
-            finish();
-            return;
-        }
-
-//        routeName = getIntent().getStringExtra("routeName");
-        routeName = startRouteSettings.name;
-
-        /*if (routeName == null) {
-            Log.e(LOG, "cannot start RouteBuildActivity without route name");
-            finish();
-            return;
-        }*/
-
-        Log.d(LOG, "starting RouteBuildActivity with route:" + routeName);
-
+    private void init () {
+        directionLoader = new DirectionLoader(context);
         map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        setCallbacks();
+        LOG = context.getResources().getString(R.string.DEBUG_LOG_NAME);
+        markers = new ArrayList<>();
+    }
 
-//        setEditorState(OVERVIEW);
+    public void route (RouteSettings rs) {
+        removeMarkers();
+        resetPolyline();
+
+        startPoint = endPoint = null;
+
+
+        reloaded = false;
+        routeSettings = rs;
+        routeName = routeSettings.name;
+
+        setCallbacks();
         setEditorState(EDIT);
 
-        routeBuilder = new RouteBuilder(this, startRouteSettings);
+        routeBuilder = new RouteBuilder(context, routeSettings);
+
+        mapEmpty = false;
 
         if (!routeBuilder.isEverythingAlright() || routeBuilder.isEmpty())
             build(BUILD_SCRATCH);
         else
             build(BUILD_EDIT);
+
+        Log.d(LOG, "MapController: editing: " + routeName);
+    }
+
+    public String getCurrentRoute () {
+        return routeName;
     }
 
     private void setState (int state) {
@@ -145,14 +142,9 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
     private void scratchBuild () {
         points = new ArrayList<>();
         overview = new ArrayList<>();
-        rLocations = new LatLng[] {
-                new LatLng(48.8687751,2.3109356),
-                new LatLng(38.5509110,-106.2868251) ,
-                //i don't really like Mexican views
-                /*new LatLng(26.3744254,-103.9903647)*/ };
         Random r = new Random();
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(rLocations[r.nextInt(rLocations.length)], 15));
-        Snackbar.make(findViewById(R.id.route_build_activity_map), R.string.ROUTE_BUILD_SNACKBAR_1, Snackbar.LENGTH_LONG).show();
+//        Snackbar.make(findViewById(R.id.route_build_activity_map_fragment), R.string.ROUTE_BUILD_SNACKBAR_1, Snackbar.LENGTH_LONG).show();
     }
 
     private void postScratchBuild () {
@@ -168,8 +160,10 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
         else
             overview = generateMarkersOverview();
         removeMarkers();
-        addMarker(points.get(0), "startPoint", "Start");
-        addMarker(points.get(points.size() - 1), "endPoint", "Finish");
+        startPoint = points.get(0);
+        endPoint = points.get(points.size() - 1);
+        addMarker(startPoint, "startPoint", "Start");
+        addMarker(endPoint, "endPoint", "Finish");
         setMarkers();
         resetPolyline();
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(points.get(0), 15));
@@ -199,12 +193,12 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
         directionLoader.init(overview, new LoaderThreadCallback<ArrayList<LatLng>>() {
             @Override
             public void onLoadComplete() {
-                Handler handler = new Handler(getMainLooper());
+                Handler handler = new Handler(context.getMainLooper());
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         build(BUILD_EDIT);
-//                        finishBuild();
+                        finishBuild();
                     }
                 });
             }
@@ -222,14 +216,6 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     private void setCallbacks () {
-        Button reloadRouteButton = findViewById(R.id.reload_route_button);
-        Button saveRouteButton = findViewById(R.id.save_route_button);
-        Button playRouteButton = findViewById(R.id.play_route_button);
-
-        reloadRouteButton.setOnClickListener(new OnReloadRouteButtonClickCallback());
-        saveRouteButton.setOnClickListener(new OnSaveRouteButtonClickCallback());
-        playRouteButton.setOnClickListener(new OnPlayRouteButtonClickCallback());
-
         map.setOnMapClickListener(new OnMapClickCallback());
         map.setOnMarkerDragListener(new OnMarkerDragCallback());
     }
@@ -280,10 +266,15 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
     }
 
     private void resetPolyline () {
-        PolylineOptions polylineOptions = new PolylineOptions().addAll(points).color(Color.BLUE).width(4);
-        if (polyline != null)
+        if (polyline != null) {
             polyline.remove();
-        polyline = map.addPolyline(polylineOptions);
+        }
+
+        if (startPoint != null && endPoint != null) {
+            PolylineOptions polylineOptions;
+            polylineOptions = new PolylineOptions().addAll(points).color(Color.BLUE).width(4);
+            polyline = map.addPolyline(polylineOptions);
+        }
     }
 
 
@@ -295,7 +286,7 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
                     if (startPoint == null) {
                         startPoint = latLng;
                         addMarker(latLng, "startPoint");
-                        Snackbar.make(findViewById(R.id.route_build_activity_map), R.string.ROUTE_BUILD_SNACKBAR_2, Snackbar.LENGTH_LONG).show();
+//                        Snackbar.make(findViewById(R.id.route_build_activity_map_fragment), R.string.ROUTE_BUILD_SNACKBAR_2, Snackbar.LENGTH_LONG).show();
                     }
                     else if (endPoint == null) {
                         addMarker(latLng, "endPoint");
@@ -340,31 +331,12 @@ public class RouteBuildActivity extends FragmentActivity implements OnMapReadyCa
         public void onMarkerDrag(Marker marker) {}
 
         @Override
-        public void onMarkerDragEnd(Marker marker) {}
-    }
-
-    private class OnReloadRouteButtonClickCallback implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
+        public void onMarkerDragEnd(Marker marker) {
             loadDirections();
         }
     }
 
-    private class OnSaveRouteButtonClickCallback implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            finishBuild();
-        }
-    }
-
-    private class OnPlayRouteButtonClickCallback implements View.OnClickListener {
-        @Override
-        public void onClick(View v) {
-            routePlayIntent.putExtra("routeSettings", new RouteSettings(routeName));
-            startActivity(routePlayIntent);
-        }
-    }
-
+    @Deprecated
     private class MarkerTag {
         private String tag;
         private LatLng point;

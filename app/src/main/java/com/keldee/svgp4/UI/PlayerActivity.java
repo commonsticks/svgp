@@ -33,9 +33,15 @@ public class PlayerActivity extends AppCompatActivity {
     private ArrayList<Bitmap> buffer;
     private int fps;
     private int spf;
-    private final int maxBufferSize = 10;
+    private final int maxBufferSize = 15;
     private int task = 0;
+
+    private final int PLAY = 1;
+    private final int PAUSE = 2;
+    private final int STOP = 3;
+    private int playerState = STOP;
     private boolean complete = false;
+//    private int loadedCount = 0;
 
     private Button restartButton;
     private Button backButton;
@@ -43,9 +49,8 @@ public class PlayerActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(LOG, "Player: onStop()");
+//        Log.i(LOG, "Player: onStop()");
         if (task != 0) {
-//            imageLoader.stopTask(task);
         }
     }
 
@@ -83,7 +88,6 @@ public class PlayerActivity extends AppCompatActivity {
     private boolean initPlayer() {
         LOG = getResources().getString(R.string.DEBUG_LOG_NAME);
         routeName = ((RouteSettings) getIntent().getSerializableExtra("routeSettings")).name;
-//        routeName = getIntent().getStringExtra("routeName");
         if (routeName == null) {
             Log.e(LOG, "cannot start PlayerActivity without route name given");
             finish();
@@ -113,7 +117,7 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     private void play () {
-        handler = new Handler();
+        playerState = PLAY;
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -169,7 +173,7 @@ public class PlayerActivity extends AppCompatActivity {
         playerView.setImageBitmap(bitmap);
     }
 
-    private class LoadCallback extends LoaderThreadCallback<Bitmap> {
+    private class LoadCallback implements LoaderThreadCallback<Bitmap> {
         @Override
         public void onLoadComplete() {
             Log.d(LOG, "complete");

@@ -68,13 +68,6 @@ public class RouteHolder {
             switchStorage();
             checkHomeDir();
             if (!homeDirChecked) {
-                //epic
-                /*checkHomeDir();
-                if (!homeDirChecked) {
-                    checkHomeDir();
-                    if (!homeDirChecked)
-                        checkHomeDir();
-                }*/
                 Log.e(LOG, "after 2 tries home directory still not accessible");
                 //TODO Make detailed check, if didn't work, tell user that there's something  with filesystem
                 return;
@@ -131,13 +124,14 @@ public class RouteHolder {
         if (r == null)
             return null;
         if (!editedRoutes.contains(name)) {
-            Log.d(LOG, "editing route: " + name);
+//            Log.d(LOG, "editing route: " + name);
             editedRoutes.add(r.name);
         }
         else {
 
-            Log.d(LOG, "route:" + name + " is being edited now, so I'm going to break your program with yet another NullPointerException, my excuses");
-            Log.d(LOG, "previous message is a joke");
+//            Log.d(LOG, "route:" + name + " is being edited now, so I'm going to break your program with yet another NullPointerException, my excuses");
+//            Log.d(LOG, "previous message is a joke");
+
             //commenting this line makes the app work sometimes
 //            return null;
         }

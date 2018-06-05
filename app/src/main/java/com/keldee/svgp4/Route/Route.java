@@ -21,7 +21,6 @@ public class Route extends RouteSettings {
 
     public Route (RouteSettings rs) {
         super(rs);
-//        Log.d("DEBUG", "Route inited with RouteSettings, given name:" + rs.name + " heading:" + rs.name);
     }
 
     public void setImages (ArrayList<SVImage> images) {
@@ -46,7 +45,7 @@ public class Route extends RouteSettings {
             f = (GCoordinate) image.getCoordinate();
             t = (GCoordinate) images.get(i + 1).getCoordinate();
             heading = (int) bearTowardPoint(f, t);
-//            Log.d(LOG, "heading image:" + i + " to heading:" + heading);
+//            Log.d(LOG, "heading image:" + i + " to: " + heading);
             if (heading < 0)
                 heading = 360 + heading;
             image.setHeading(Integer.toString(heading));
